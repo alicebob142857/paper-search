@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智能论文检索系统</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <h1 class="title">智能论文检索系统</h1>
+        <p class="subtitle">基于关键词匹配的学术论文搜索引擎</p>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <!-- 筛选器区域 -->
+        <section class="filters-section">
+          <div class="filter-group">
+            <label for="conferenceSelect">选择会议:</label>
+            <select id="conferenceSelect" class="select-input">
+              <option value="">请先加载数据...</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="yearSelect">选择年份:</label>
+            <select id="yearSelect" class="select-input">
+              <option value="">请先选择会议...</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <button id="loadDataBtn" class="btn btn-primary">
+              加载论文数据
+            </button>
+          </div>
+        </section>
+
+        <!-- 搜索区域 -->
+        <section class="search-section">
+          <div class="search-container">
+            <div class="keyword-input-group">
+              <input
+                type="text"
+                id="keywordInput"
+                class="search-input"
+                placeholder="输入关键词后按回车添加..."
+              />
+              <button id="addKeywordBtn" class="btn btn-secondary">
+                添加关键词
+              </button>
+            </div>
+
+            <div class="keywords-display" id="keywordsDisplay">
+              <!-- 关键词标签将在这里显示 -->
+            </div>
+
+            <div class="search-controls">
+              <button id="searchBtn" class="btn btn-primary">搜索论文</button>
+              <button id="clearKeywordsBtn" class="btn btn-outline">
+                清空关键词
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 状态显示区域 -->
+        <section class="status-section">
+          <div id="statusDisplay" class="status-display">
+            <span class="status-text">请选择会议和年份，然后加载数据</span>
+          </div>
+        </section>
+
+        <!-- 结果显示区域 -->
+        <section class="results-section">
+          <div id="resultsContainer" class="results-container">
+            <!-- 搜索结果将在这里显示 -->
+          </div>
+
+          <!-- 分页控件 -->
+          <div id="paginationContainer" class="pagination-container">
+            <!-- 分页按钮将在这里显示 -->
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- 加载指示器 -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

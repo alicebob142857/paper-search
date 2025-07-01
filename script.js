@@ -102,7 +102,7 @@ class PaperSearchSystem {
             'aaai', 'nips', 'icml', 'iclr', 'acl', 'emnlp', 'naacl', 
             'cvpr', 'iccv', 'eccv', 'sigir', 'www', 'kdd', 'ijcai'
         ];
-        
+        console.log(conferences);
         // 可能的年份范围
         const years = [];
         const currentYear = new Date().getFullYear();
