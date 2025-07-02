@@ -113,7 +113,7 @@ class PaperSearchSystem {
       "kdd",
       "ijcai",
     ];
-    console.log(conferences);
+
     // 可能的年份范围
     const years = [];
     const currentYear = new Date().getFullYear();
@@ -121,28 +121,57 @@ class PaperSearchSystem {
       years.push(year.toString());
     }
 
-    // 检查每个会议和年份的组合
+    // 生成所有需要检查的文件路径
+    const allFileChecks = [];
     for (const conference of conferences) {
-      const conferenceFiles = [];
-
       for (const year of years) {
         const fileName = `${conference}${year}.json`;
         const filePath = `data/${conference}/${fileName}`;
 
-        // 尝试检查文件是否存在
-        if (await this.checkFileExists(filePath)) {
-          conferenceFiles.push({
-            year: year,
-            fileName: fileName,
-            filePath: filePath,
-          });
-        }
-      }
-
-      if (conferenceFiles.length > 0) {
-        this.availableFiles.set(conference.toUpperCase(), conferenceFiles);
+        allFileChecks.push({
+          conference,
+          year,
+          fileName,
+          filePath,
+          checkPromise: this.checkFileExists(filePath),
+        });
       }
     }
+
+    console.log(`开始并行检查 ${allFileChecks.length} 个文件...`);
+
+    // 并行检查所有文件是否存在
+    const results = await Promise.allSettled(
+      allFileChecks.map((item) => item.checkPromise)
+    );
+
+    // 处理结果
+    const conferenceMap = new Map();
+
+    results.forEach((result, index) => {
+      const fileInfo = allFileChecks[index];
+
+      if (result.status === "fulfilled" && result.value) {
+        const conference = fileInfo.conference.toUpperCase();
+
+        if (!conferenceMap.has(conference)) {
+          conferenceMap.set(conference, []);
+        }
+
+        conferenceMap.get(conference).push({
+          year: fileInfo.year,
+          fileName: fileInfo.fileName,
+          filePath: fileInfo.filePath,
+        });
+      }
+    });
+
+    // 按年份降序排序每个会议的文件
+    for (const [conference, files] of conferenceMap.entries()) {
+      files.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+    }
+
+    this.availableFiles = conferenceMap;
 
     this.hideLoading();
     this.populateConferenceSelect();
@@ -165,9 +194,21 @@ class PaperSearchSystem {
    */
   async checkFileExists(filePath) {
     try {
-      const response = await fetch(filePath, { method: "HEAD" });
+      // 创建一个带超时的 Promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Request timeout")), 3000); // 3秒超时
+      });
+
+      const fetchPromise = fetch(filePath, {
+        method: "HEAD",
+        cache: "no-cache", // 避免缓存问题
+      });
+
+      // 使用 Promise.race 来实现超时控制
+      const response = await Promise.race([fetchPromise, timeoutPromise]);
       return response.ok;
     } catch (error) {
+      // 超时或其他错误都返回 false
       return false;
     }
   }
