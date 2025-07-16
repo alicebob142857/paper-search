@@ -9,7 +9,10 @@ class PaperSearchSystem {
     this.availableFiles = new Map(); // 存储可用的数据文件信息
     this.currentPapers = []; // 当前加载的论文数据
     this.searchResults = []; // 搜索结果
-    this.keywords = new Set(); // 搜索关键词集合
+    this.keywords = new Set(); // 当前选中的搜索关键词集合
+
+    // 关键词记忆功能
+    this.historicalKeywords = new Set(); // 历史关键词
 
     // 分页配置
     this.currentPage = 1;
@@ -48,6 +51,7 @@ class PaperSearchSystem {
   async initialize() {
     this.setupEventListeners();
     await this.scanDataFiles();
+    this.loadHistoricalKeywords(); // 加载历史关键词
     this.updateKeywordsDisplay();
     this.updateStatus("系统初始化完成，请选择会议和年份");
   }
@@ -477,26 +481,35 @@ class PaperSearchSystem {
       return;
     }
 
+    // 立即添加到历史关键词
+    this.historicalKeywords.add(keyword.toLowerCase());
+    this.saveHistoricalKeywords();
+
+    // 添加到当前搜索关键词
     if (this.keywords.has(keyword.toLowerCase())) {
       this.updateStatus(`关键词 "${keyword}" 已存在`, "warning");
-      return;
+    } else {
+      this.keywords.add(keyword.toLowerCase());
+      // 如果已经加载了数据，自动执行搜索
+      if (this.currentPapers.length > 0) {
+        this.performSearch();
+      }
     }
 
-    this.keywords.add(keyword.toLowerCase());
     this.elements.keywordInput.value = "";
     this.updateKeywordsDisplay();
-
-    // 如果已经加载了数据，自动执行搜索
-    if (this.currentPapers.length > 0) {
-      this.performSearch();
-    }
   }
 
   /**
-   * 移除关键词
+   * 切换关键词选中状态
    */
-  removeKeyword(keyword) {
-    this.keywords.delete(keyword);
+  toggleKeyword(keyword) {
+    if (this.keywords.has(keyword)) {
+      this.keywords.delete(keyword);
+    } else {
+      this.keywords.add(keyword);
+    }
+
     this.updateKeywordsDisplay();
 
     // 重新执行搜索
@@ -529,24 +542,99 @@ class PaperSearchSystem {
     const container = this.elements.keywordsDisplay;
     container.innerHTML = "";
 
-    if (this.keywords.size === 0) {
+    // 获取所有关键词（历史关键词 + 当前关键词）
+    const allKeywords = new Set([...this.historicalKeywords, ...this.keywords]);
+
+    if (allKeywords.size === 0) {
       container.classList.add("empty");
       return;
     }
 
     container.classList.remove("empty");
 
-    Array.from(this.keywords).forEach((keyword) => {
-      const tag = document.createElement("div");
-      tag.className = "keyword-tag";
-      tag.innerHTML = `
-                <span>${keyword}</span>
-                <button class="keyword-remove" onclick="paperSystem.removeKeyword('${keyword}')" title="移除关键词">
-                    ×
-                </button>
-            `;
-      container.appendChild(tag);
-    });
+    // 按字母顺序排序显示
+    Array.from(allKeywords)
+      .sort()
+      .forEach((keyword) => {
+        const tag = document.createElement("div");
+        const isSelected = this.keywords.has(keyword);
+
+        tag.className = `keyword-tag ${isSelected ? "selected" : "historical"}`;
+
+        // 创建关键词内容
+        const keywordSpan = document.createElement("span");
+        keywordSpan.textContent = keyword;
+        keywordSpan.addEventListener("click", () =>
+          this.toggleKeyword(keyword)
+        );
+
+        // 创建删除按钮
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "keyword-remove";
+        deleteBtn.innerHTML = "×";
+        deleteBtn.title = "删除关键词";
+        deleteBtn.addEventListener("click", (e) => {
+          e.stopPropagation(); // 防止触发切换选中状态
+          this.deleteKeyword(keyword);
+        });
+
+        tag.appendChild(keywordSpan);
+        tag.appendChild(deleteBtn);
+        container.appendChild(tag);
+      });
+  }
+
+  /**
+   * 删除关键词（从历史记录中永久删除）
+   */
+  deleteKeyword(keyword) {
+    // 从历史关键词中删除
+    this.historicalKeywords.delete(keyword);
+    // 从当前选中关键词中删除
+    this.keywords.delete(keyword);
+
+    // 保存更新后的历史关键词
+    this.saveHistoricalKeywords();
+
+    // 更新显示
+    this.updateKeywordsDisplay();
+
+    // 重新执行搜索
+    if (this.currentPapers.length > 0) {
+      if (this.keywords.size > 0) {
+        this.performSearch();
+      } else {
+        this.displayAllPapers();
+      }
+    }
+  }
+
+  /**
+   * 保存历史关键词到localStorage
+   */
+  saveHistoricalKeywords() {
+    try {
+      localStorage.setItem(
+        "historicalKeywords",
+        JSON.stringify(Array.from(this.historicalKeywords))
+      );
+    } catch (error) {
+      console.error("保存历史关键词失败:", error);
+    }
+  }
+
+  /**
+   * 从localStorage加载历史关键词
+   */
+  loadHistoricalKeywords() {
+    try {
+      const savedKeywords = localStorage.getItem("historicalKeywords");
+      if (savedKeywords) {
+        this.historicalKeywords = new Set(JSON.parse(savedKeywords));
+      }
+    } catch (error) {
+      console.error("加载历史关键词失败:", error);
+    }
   }
 
   findKeywordMatches(paper, keywords) {

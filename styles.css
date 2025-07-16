@@ -161,20 +161,37 @@ body {
 .keyword-tag {
   display: inline-flex;
   align-items: center;
-  background: #667eea;
-  color: white;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
   gap: 8px;
+  transition: all 0.2s ease;
   animation: fadeInScale 0.2s ease;
+}
+
+.keyword-tag span {
+  cursor: pointer;
+}
+
+.keyword-tag.selected {
+  background: #667eea;
+  color: white;
+}
+
+.keyword-tag.historical {
+  background: #e5e7eb;
+  color: #4a5568;
+}
+
+.keyword-tag.historical:hover {
+  background: #d1d5db;
+  transform: translateY(-1px);
 }
 
 .keyword-remove {
   background: none;
   border: none;
-  color: white;
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
@@ -188,8 +205,21 @@ body {
   transition: background-color 0.2s ease;
 }
 
-.keyword-remove:hover {
+.keyword-tag.selected .keyword-remove {
+  color: white;
+}
+
+.keyword-tag.selected .keyword-remove:hover {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+.keyword-tag.historical .keyword-remove {
+  color: #6b7280;
+}
+
+.keyword-tag.historical .keyword-remove:hover {
+  background-color: rgba(107, 114, 128, 0.2);
+  color: #374151;
 }
 
 .search-controls {
@@ -664,162 +694,162 @@ body {
 }
 
 .paper-rating {
-    display: inline-block;
-    background: #f59e0b;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    margin-left: 0.5rem;
+  display: inline-block;
+  background: #f59e0b;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
 }
 
 .paper-status {
-    display: inline-block;
-    background: #10b981;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    margin-left: 0.5rem;
+  display: inline-block;
+  background: #10b981;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
 }
 
 /* 论文元信息区域 */
 .paper-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* 作者信息样式 */
+.paper-authors {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+/* 状态标签样式 */
+.paper-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-award {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #92400e;
+  box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+}
+
+.status-oral {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.status-accepted {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.status-poster {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+}
+
+.status-short {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3);
+}
+
+.status-other {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.3);
+}
+
+/* 评分标签样式 */
+.paper-rating {
+  display: inline-block;
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
+}
+
+/* 高亮样式优化 */
+.highlight {
+  background: linear-gradient(120deg, #fef3cd 0%, #fcd34d 100%);
+  color: #92400e;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(252, 211, 77, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .paper-meta {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  /* 作者信息样式 */
+
   .paper-authors {
-    color: #6b7280;
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.5;
+    font-size: 0.85rem;
   }
-  
-  /* 状态标签样式 */
-  .paper-status {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .status-award {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    color: #92400e;
-    box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
-  }
-  
-  .status-oral {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
-  }
-  
-  .status-accepted {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
-  }
-  
-  .status-poster {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-    color: white;
-    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
-  }
-  
-  .status-short {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    color: white;
-    box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3);
-  }
-  
-  .status-other {
-    background: linear-gradient(135deg, #6b7280, #4b5563);
-    color: white;
-    box-shadow: 0 2px 4px rgba(107, 114, 128, 0.3);
-  }
-  
-  /* 评分标签样式 */
+
+  .paper-status,
   .paper-rating {
-    display: inline-block;
-    background: linear-gradient(135deg, #ec4899, #db2777);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
+    font-size: 0.7rem;
+    padding: 3px 10px;
   }
-  
-  /* 高亮样式优化 */
-  .highlight {
-    background: linear-gradient(120deg, #fef3cd 0%, #fcd34d 100%);
-    color: #92400e;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-weight: 600;
-    box-shadow: 0 1px 2px rgba(252, 211, 77, 0.3);
-  }
-  
-  /* 响应式调整 */
-  @media (max-width: 768px) {
-    .paper-meta {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .paper-authors {
-      font-size: 0.85rem;
-    }
-    
-    .paper-status,
-    .paper-rating {
-      font-size: 0.7rem;
-      padding: 3px 10px;
-    }
-  }
-  
-  /* 作者单位信息的特殊样式 */
-  .paper-authors .affiliation {
-    color: #9ca3af;
-    font-style: italic;
-    font-size: 0.85em;
-  }
-  
-  /* 为了更好地显示长作者列表 */
-  .paper-authors {
-    max-height: 4.5em;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .paper-authors.expanded {
-    max-height: none;
-  }
-  
-  .paper-authors::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 1.5em;
-    background: linear-gradient(transparent, white);
-    pointer-events: none;
-  }
-  
-  .paper-authors.expanded::after {
-    display: none;
-  }
+}
+
+/* 作者单位信息的特殊样式 */
+.paper-authors .affiliation {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 0.85em;
+}
+
+/* 为了更好地显示长作者列表 */
+.paper-authors {
+  max-height: 4.5em;
+  overflow: hidden;
+  position: relative;
+}
+
+.paper-authors.expanded {
+  max-height: none;
+}
+
+.paper-authors::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 1.5em;
+  background: linear-gradient(transparent, white);
+  pointer-events: none;
+}
+
+.paper-authors.expanded::after {
+  display: none;
+}
