@@ -116,6 +116,20 @@ class PaperSearchSystem {
       "www",
       "kdd",
       "ijcai",
+      "acml",
+      "acmmm",
+      "aistats",
+      "automl",
+      "coling",
+      "colm",
+      "colt",
+      "corl",
+      "iros",
+      "rss",
+      "siggraph",
+      "siggraphasia",
+      "uai",
+      "wacv"
     ];
 
     // 可能的年份范围
